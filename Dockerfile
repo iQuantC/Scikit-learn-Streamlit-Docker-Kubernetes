@@ -1,5 +1,5 @@
 # Base Python image
-FROM python:3.9-slim
+FROM python:3.9-slim-bullseye
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
