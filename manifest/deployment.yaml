@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-ml-deployment
+spec:
+  replicas: 2   # 2 pods for High Availability
+  selector:
+    matchLabels:
+      app: streamlit-ml-app
+  template:
+    metadata:
+      labels:
+        app: streamlit-ml-app
+    spec:
+      containers:
+      - name: streamlit-ml-container
+        image: iquantc/streamlit-ml-app:latest
+        ports:
+        - containerPort: 8501
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        readinessProbe:   # Check if the app is READY
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:    # Check if the app is ALIVE
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        env:              # Pass optional ENV variables (example)
+        - name: STREAMLIT_SERVER_HEADLESS
+          value: "true"
